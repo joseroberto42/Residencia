@@ -5,7 +5,7 @@ import axios from 'axios';
 import styles from './style';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import * as Animatable from 'react-native-animatable';
-
+import { useNavigation } from '@react-navigation/native';
 interface User {
   name: string;
   email: string;
@@ -29,6 +29,8 @@ export default function Register() {
     const [day, month, year] = date.split('/');
     return `${year}-${month}-${day}`; // Formato YYYY-MM-DD
   };
+  const navigation = useNavigation();
+
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -54,6 +56,7 @@ export default function Register() {
 
       if (response.status === 200) {
         Alert.alert('Sucesso', 'Usuário registrado com sucesso!');
+        navigation.navigate('Tabs'); // Mude para 'Tabs'
       }
     } catch (error: any) {
       console.log('Erro:', error.response ? error.response.data : error.message);

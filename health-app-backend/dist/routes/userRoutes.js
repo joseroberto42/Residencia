@@ -48,7 +48,8 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
             return res.status(400).json({ message: 'E-mail ou senha incorretos.' });
         }
         const token = jsonwebtoken_1.default.sign({ id: user.id }, process.env.JWT_SECRET || 'secreta', { expiresIn: '1h' });
-        res.json({ token });
+        // Retornar o userId e o token
+        res.json({ userId: user.id, token }); // Aqui estamos incluindo o userId na resposta
     }
     catch (error) {
         console.error('Erro ao fazer login:', error); // Log do erro para depuração

@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 export const validateMedication = (req: Request, res: Response, next: NextFunction) => {
-    const { userId, name, dosage, frequency, schedule, brand } = req.body;
+    const { userId, name, dosage, frequency, schedule, brand,days } = req.body;
 
     if (typeof userId !== 'number') {
         return res.status(400).json({ message: 'Campo userId deve ser um número.' });
@@ -21,6 +21,9 @@ export const validateMedication = (req: Request, res: Response, next: NextFuncti
     }
     if (!brand) {
         return res.status(400).json({ message: 'Campo brand é obrigatório.' });
+    } 
+    if (!days) {
+        return res.status(400).json({ message: 'Campo days é obrigatório.' });
     }
 
     next();

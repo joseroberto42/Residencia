@@ -43,11 +43,14 @@ router.post('/login', async (req, res) => {
         }
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'secreta', { expiresIn: '1h' });
-        res.json({ token });
+        
+        // Retornar o userId e o token
+        res.json({ userId: user.id, token }); // Aqui estamos incluindo o userId na resposta
     } catch (error) {
         console.error('Erro ao fazer login:', error); // Log do erro para depuração
         res.status(500).json({ message: 'Erro ao fazer login.', error });
     }
 });
+
 
 export default router;

@@ -12,11 +12,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMedicationHandler = exports.updateMedicationHandler = exports.getMedicationsHandler = exports.createMedicationHandler = void 0;
 const MedicationModel_1 = require("../models/MedicationModel");
 const createMedicationHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Extraindo os campos necessários do corpo da requisição, incluindo brand
-    const { userId, name, dosage, frequency, schedule, brand } = req.body;
+    // Extraindo os campos necessários do corpo da requisição, incluindo brand e days
+    const { userId, name, dosage, frequency, schedule, brand, days } = req.body;
     try {
-        // Incluindo brand na chamada para createMedication
-        yield (0, MedicationModel_1.createMedication)({ userId, name, dosage, frequency, schedule, brand });
+        // Incluindo todos os campos na chamada para createMedication
+        yield (0, MedicationModel_1.createMedication)({ userId, name, dosage, frequency, schedule, brand, days });
         res.status(201).json({ message: 'Medicamento criado com sucesso!' });
     }
     catch (error) {
@@ -37,11 +37,11 @@ const getMedicationsHandler = (req, res) => __awaiter(void 0, void 0, void 0, fu
 exports.getMedicationsHandler = getMedicationsHandler;
 const updateMedicationHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const medicationId = Number(req.params.id);
-    // Extraindo todos os campos necessários, incluindo brand
-    const { userId, name, dosage, frequency, schedule, brand } = req.body;
+    // Extraindo todos os campos necessários, incluindo brand e days
+    const { userId, name, dosage, frequency, schedule, brand, days } = req.body;
     try {
-        // Incluindo brand na chamada para updateMedication
-        yield (0, MedicationModel_1.updateMedication)(medicationId, { userId, name, dosage, frequency, schedule, brand });
+        // Incluindo todos os campos na chamada para updateMedication
+        yield (0, MedicationModel_1.updateMedication)(medicationId, { userId, name, dosage, frequency, schedule, brand, days });
         res.json({ message: 'Medicamento atualizado com sucesso!' });
     }
     catch (error) {

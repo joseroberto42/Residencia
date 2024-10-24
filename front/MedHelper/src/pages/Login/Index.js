@@ -4,7 +4,7 @@ import styles from './style';
 import * as Animatable from 'react-native-animatable';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-// import axios from 'axios'; // Se optar por usar o Axios
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Login() {
     const navigation = useNavigation();
@@ -19,7 +19,6 @@ export default function Login() {
         }
 
         try {
-            // Usando fetch para enviar a requisição à API
             const response = await fetch('http://localhost:5000/api/users/login/', {
                 method: 'POST',
                 headers: {
@@ -34,17 +33,22 @@ export default function Login() {
             const data = await response.json();
 
             if (response.ok) {
-                // Se o login for bem-sucedido
-                Alert.alert('Sucesso', 'Login realizado com sucesso!');
-                // Navegue para a próxima tela ou faça algo com o token de autenticação retornado
-                navigation.navigate('Home');
+                console.log('Sucesso', 'Login realizado com sucesso!');
+
+                // Armazenar userId e token no AsyncStorage
+                await AsyncStorage.setItem('userId', data.userId.toString()); // Armazena o ID do usuário
+                await AsyncStorage.setItem('token', data.token); // Armazena o token
+
+                console.log('User ID armazenado:', data.userId); // Verificação do userId
+
+                navigation.navigate('Tabs');
             } else {
-                // Se o login falhar (exemplo: senha ou email incorretos)
-                Alert.alert('Erro', data.message || 'Erro ao realizar o login.');
+                console.log('Erro', data.message || 'Erro ao realizar o login.');
             }
+
         } catch (error) {
             console.error(error);
-            Alert.alert('Erro', 'Erro ao conectar com o servidor.');
+            console.log('Erro', 'Erro ao conectar com o servidor.');
         }
     };
 

@@ -4,7 +4,8 @@ import {
     createMedicationHandler,
     getMedicationsHandler,
     updateMedicationHandler,
-    deleteMedicationHandler
+    deleteMedicationHandler,
+   
 } from '../controllers/MedicationController';
 import { authMiddleware } from '../middleware/authMiddleware';
 import { validateMedication } from '../middleware/medicationMiddleware';
@@ -22,5 +23,6 @@ router.put('/:id', authMiddleware, validateMedication, updateMedicationHandler);
 
 // Excluir medicamento
 router.delete('/:id', authMiddleware, deleteMedicationHandler);
+
 
 export default router;

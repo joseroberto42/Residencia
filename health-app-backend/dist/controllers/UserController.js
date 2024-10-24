@@ -20,7 +20,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, email, password, birthdate, gender, ethnicity } = req.body; // Incluindo ethnicity
     // Validação dos dados
-    if (!name || !email || !password || !birthdate || !gender || !ethnicity) { // Verificação do ethnicity
+    if (!name || !email || !password || !birthdate || !gender || !ethnicity) {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
     try {

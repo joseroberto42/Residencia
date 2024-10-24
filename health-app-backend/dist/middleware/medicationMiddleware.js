@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateMedication = void 0;
 const validateMedication = (req, res, next) => {
-    const { userId, name, dosage, frequency, schedule, brand } = req.body;
+    const { userId, name, dosage, frequency, schedule, brand, days } = req.body;
     if (typeof userId !== 'number') {
         return res.status(400).json({ message: 'Campo userId deve ser um número.' });
     }
@@ -20,6 +20,9 @@ const validateMedication = (req, res, next) => {
     }
     if (!brand) {
         return res.status(400).json({ message: 'Campo brand é obrigatório.' });
+    }
+    if (!days) {
+        return res.status(400).json({ message: 'Campo days é obrigatório.' });
     }
     next();
 };

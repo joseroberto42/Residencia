@@ -8,14 +8,15 @@ const dt_1 = __importDefault(require("../config/dt"));
 // Criar um novo medicamento
 const createMedication = (medicationData) => {
     return new Promise((resolve, reject) => {
-        const query = 'INSERT INTO Medications (userId, name, dosage, frequency, schedule, brand, createdAt) VALUES (?, ?, ?, ?, ?, ?, NOW())';
+        const query = 'INSERT INTO Medications (userId, name, dosage, frequency, schedule, brand, days, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())';
         dt_1.default.query(query, [
             medicationData.userId,
             medicationData.name,
             medicationData.dosage,
-            medicationData.frequency,
+            medicationData.frequency, // Frequência é diretamente o número
             medicationData.schedule,
-            medicationData.brand
+            medicationData.brand,
+            medicationData.days // Adiciona a nova coluna days
         ], (err, results) => {
             if (err)
                 return reject(err);
@@ -39,13 +40,14 @@ exports.findMedicationsByUserId = findMedicationsByUserId;
 // Atualizar um medicamento existente
 const updateMedication = (medicationId, medicationData) => {
     return new Promise((resolve, reject) => {
-        const query = 'UPDATE Medications SET name = ?, dosage = ?, frequency = ?, schedule = ?, brand = ?, updatedAt = NOW() WHERE id = ?';
+        const query = 'UPDATE Medications SET name = ?, dosage = ?, frequency = ?, schedule = ?, brand = ?, days = ?, updatedAt = NOW() WHERE id = ?';
         dt_1.default.query(query, [
             medicationData.name,
             medicationData.dosage,
-            medicationData.frequency,
+            medicationData.frequency, // Frequência é diretamente o número
             medicationData.schedule,
             medicationData.brand,
+            medicationData.days, // Atualiza a coluna days
             medicationId
         ], (err, results) => {
             if (err)

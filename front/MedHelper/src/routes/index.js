@@ -3,10 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import Login from '../pages/Login/Index'
 import Welcome from '../pages/Welcome/index'
 import Register from '../pages/Register/index'
-
+import Layout from './layout';
+import Home from '../pages/Home';
 const Stack = createNativeStackNavigator()
 export default function Routes(){
-    return(
+    return( 
+    
         <Stack.Navigator>
             <Stack.Screen
                 name='Welcome'
@@ -25,8 +27,19 @@ export default function Routes(){
                 component={Register}
                 options={{headerShown: false}}
             />
-
+            <Stack.Screen
+                name='Home'
+                component={Home}
+                options={{headerShown: false}}
+            />
+              <Stack.Screen
+                name='Tabs'
+                component={Layout} 
+                options={{ headerShown: false }}
+            />
+       
         </Stack.Navigator>
+        
     )    
 
 }
