@@ -13,6 +13,8 @@ const router = express_1.default.Router();
 router.post('/', authMiddleware_1.authMiddleware, medicationMiddleware_1.validateMedication, MedicationController_1.createMedicationHandler);
 // Obter medicamentos por usuário
 router.get('/:userId', authMiddleware_1.authMiddleware, MedicationController_1.getMedicationsHandler);
+// Obter medicamentos por usuário e nome (filtragem)
+router.get('/:userId/search', authMiddleware_1.authMiddleware, MedicationController_1.getMedicationsByNameHandler); // Nova rota
 // Atualizar medicamento
 router.put('/:id', authMiddleware_1.authMiddleware, medicationMiddleware_1.validateMedication, MedicationController_1.updateMedicationHandler);
 // Excluir medicamento

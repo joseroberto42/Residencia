@@ -5,6 +5,8 @@ import Welcome from '../pages/Welcome/index'
 import Register from '../pages/Register/index'
 import Layout from './layout';
 import Home from '../pages/Home';
+import Profille from '../pages/Perfil/index'
+import RelatorioMedication from '../components/RelatorioMedication'
 const Stack = createNativeStackNavigator()
 export default function Routes(){
     return( 
@@ -30,6 +32,16 @@ export default function Routes(){
             <Stack.Screen
                 name='Home'
                 component={Home}
+                options={{headerShown: false}}
+            />
+             <Stack.Screen
+                name='RelatorioMedication'
+                component={RelatorioMedication}
+                options={{headerShown: false}}
+            />
+             <Stack.Screen
+                name='Profille'
+                component={Profille}
                 options={{headerShown: false}}
             />
               <Stack.Screen

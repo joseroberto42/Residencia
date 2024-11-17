@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -14,8 +14,8 @@ interface Medication {
 }
 
 interface MedicationListProps {
-    userId?: number; // userId é opcional
-    onEdit?: (id: number) => void; // Função onEdit opcional
+    userId?: number;
+    onEdit?: (id: number) => void;
 }
 
 const MedicationList: React.FC<MedicationListProps> = ({ userId, onEdit }) => {
@@ -48,7 +48,7 @@ const MedicationList: React.FC<MedicationListProps> = ({ userId, onEdit }) => {
 
                 const response = await axios.get(`http://localhost:5000/api/medications/${currentUserId}`, {
                     headers: {
-                        'Authorization': `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 });
 
@@ -64,14 +64,22 @@ const MedicationList: React.FC<MedicationListProps> = ({ userId, onEdit }) => {
     }, [userId]);
 
     const renderItem = ({ item }: { item: Medication }) => (
-        <View style={styles.itemContainer}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text>Dosagem: {item.dosage}</Text>
-            <Text>Frequência: {item.frequency} vezes por dia</Text>
-            <Text>Horário: {item.schedule}</Text>
-            <Text>Marca: {item.brand}</Text>
-            <Text>Dias: {item.days}</Text>
-            {onEdit && <Button title="Editar" onPress={() => onEdit(item.id)} />}
+        <View style={styles.card}>
+            <View style={styles.cardHeader}>
+                <Text style={styles.cardHeaderText}>{item.name}</Text>
+            </View>
+            <View style={styles.cardContent}>
+                <Text style={styles.itemText}>Dosagem: {item.dosage}</Text>
+                <Text style={styles.itemText}>Frequência: {item.frequency} vezes por dia</Text>
+                <Text style={styles.itemText}>Horário: {item.schedule}</Text>
+                <Text style={styles.itemText}>Marca: {item.brand}</Text>
+                <Text style={styles.itemText}>Dias: {item.days}</Text>
+                {onEdit && (
+                    <TouchableOpacity style={styles.editButton} onPress={() => onEdit(item.id)}>
+                        <Text style={styles.editButtonText}>Editar</Text>
+                    </TouchableOpacity>
+                )}
+            </View>
         </View>
     );
 
@@ -84,27 +92,68 @@ const MedicationList: React.FC<MedicationListProps> = ({ userId, onEdit }) => {
     }
 
     return (
-        <FlatList
-            data={medications}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-        />
+        <View style={styles.container}>
+            <FlatList
+                data={medications}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                contentContainerStyle={styles.list}
+            />
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    itemContainer: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+    container: {
+        flex: 1,
+        backgroundColor: '#f4f4f4',
     },
-    itemName: {
+    list: {
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+    card: {
+        width: '95%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        marginVertical: 10,
+        overflow: 'hidden',
+        elevation: 5,
+    },
+    cardHeader: {
+        backgroundColor: '#007BFF',
+        padding: 10,
+    },
+    cardHeaderText: {
+        color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    cardContent: {
+        padding: 15,
+    },
+    itemText: {
+        fontSize: 16,
+        color: '#555',
+        marginBottom: 5,
+    },
+    editButton: {
+        marginTop: 10,
+        backgroundColor: '#007BFF',
+        paddingVertical: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    editButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
     },
     errorText: {
         color: 'red',
         textAlign: 'center',
+        marginTop: 20,
+        fontSize: 16,
     },
 });
 

@@ -9,13 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMedicationHandler = exports.updateMedicationHandler = exports.getMedicationsHandler = exports.createMedicationHandler = void 0;
+exports.deleteMedicationHandler = exports.updateMedicationHandler = exports.getMedicationsByNameHandler = exports.getMedicationsHandler = exports.createMedicationHandler = void 0;
 const MedicationModel_1 = require("../models/MedicationModel");
+// Criar medicamento
 const createMedicationHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // Extraindo os campos necessários do corpo da requisição, incluindo brand e days
     const { userId, name, dosage, frequency, schedule, brand, days } = req.body;
     try {
-        // Incluindo todos os campos na chamada para createMedication
         yield (0, MedicationModel_1.createMedication)({ userId, name, dosage, frequency, schedule, brand, days });
         res.status(201).json({ message: 'Medicamento criado com sucesso!' });
     }
@@ -24,6 +23,7 @@ const createMedicationHandler = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.createMedicationHandler = createMedicationHandler;
+// Buscar medicamentos por ID de usuário
 const getMedicationsHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = Number(req.params.userId);
     try {
@@ -35,12 +35,24 @@ const getMedicationsHandler = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.getMedicationsHandler = getMedicationsHandler;
+// Buscar medicamentos por ID de usuário e nome
+const getMedicationsByNameHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = Number(req.params.userId);
+    const name = req.query.name; // Nome fornecido como parâmetro de consulta (query string)
+    try {
+        const medications = yield (0, MedicationModel_1.findMedicationsByUserIdAndName)(userId, name);
+        res.json(medications);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar medicamentos por nome.', error });
+    }
+});
+exports.getMedicationsByNameHandler = getMedicationsByNameHandler;
+// Atualizar medicamento
 const updateMedicationHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const medicationId = Number(req.params.id);
-    // Extraindo todos os campos necessários, incluindo brand e days
     const { userId, name, dosage, frequency, schedule, brand, days } = req.body;
     try {
-        // Incluindo todos os campos na chamada para updateMedication
         yield (0, MedicationModel_1.updateMedication)(medicationId, { userId, name, dosage, frequency, schedule, brand, days });
         res.json({ message: 'Medicamento atualizado com sucesso!' });
     }
@@ -49,6 +61,7 @@ const updateMedicationHandler = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.updateMedicationHandler = updateMedicationHandler;
+// Excluir medicamento
 const deleteMedicationHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const medicationId = Number(req.params.id);
     try {

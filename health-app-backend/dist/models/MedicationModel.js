@@ -3,21 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMedication = exports.updateMedication = exports.findMedicationsByUserId = exports.createMedication = void 0;
+exports.deleteMedication = exports.updateMedication = exports.findMedicationsByUserIdAndName = exports.findMedicationsByUserId = exports.createMedication = void 0;
 const dt_1 = __importDefault(require("../config/dt"));
 // Criar um novo medicamento
-const createMedication = (medicationData) => {
+const createMedication = (data) => {
+    const { userId, name, dosage, frequency, schedule, brand, days } = data;
     return new Promise((resolve, reject) => {
-        const query = 'INSERT INTO Medications (userId, name, dosage, frequency, schedule, brand, days, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())';
-        dt_1.default.query(query, [
-            medicationData.userId,
-            medicationData.name,
-            medicationData.dosage,
-            medicationData.frequency, // Frequência é diretamente o número
-            medicationData.schedule,
-            medicationData.brand,
-            medicationData.days // Adiciona a nova coluna days
-        ], (err, results) => {
+        const query = 'INSERT INTO Medications (userId, name, dosage, frequency, schedule, brand, days) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        dt_1.default.query(query, [userId, name, dosage, frequency, schedule, brand, days], (err, results) => {
             if (err)
                 return reject(err);
             resolve(results);
@@ -37,19 +30,30 @@ const findMedicationsByUserId = (userId) => {
     });
 };
 exports.findMedicationsByUserId = findMedicationsByUserId;
-// Atualizar um medicamento existente
-const updateMedication = (medicationId, medicationData) => {
+// Buscar medicamentos por ID de usuário e nome
+const findMedicationsByUserIdAndName = (userId, name) => {
     return new Promise((resolve, reject) => {
-        const query = 'UPDATE Medications SET name = ?, dosage = ?, frequency = ?, schedule = ?, brand = ?, days = ?, updatedAt = NOW() WHERE id = ?';
-        dt_1.default.query(query, [
-            medicationData.name,
-            medicationData.dosage,
-            medicationData.frequency, // Frequência é diretamente o número
-            medicationData.schedule,
-            medicationData.brand,
-            medicationData.days, // Atualiza a coluna days
-            medicationId
-        ], (err, results) => {
+        let query = 'SELECT * FROM Medications WHERE userId = ?';
+        const params = [userId];
+        // Adicionar filtro por nome, se fornecido
+        if (name) {
+            query += ' AND name LIKE ?';
+            params.push(`%${name}%`);
+        }
+        dt_1.default.query(query, params, (err, results) => {
+            if (err)
+                return reject(err);
+            resolve(results);
+        });
+    });
+};
+exports.findMedicationsByUserIdAndName = findMedicationsByUserIdAndName;
+// Atualizar medicamento
+const updateMedication = (id, data) => {
+    const { userId, name, dosage, frequency, schedule, brand, days } = data;
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE Medications SET userId = ?, name = ?, dosage = ?, frequency = ?, schedule = ?, brand = ?, days = ? WHERE id = ?';
+        dt_1.default.query(query, [userId, name, dosage, frequency, schedule, brand, days, id], (err, results) => {
             if (err)
                 return reject(err);
             resolve(results);
@@ -57,11 +61,11 @@ const updateMedication = (medicationId, medicationData) => {
     });
 };
 exports.updateMedication = updateMedication;
-// Deletar um medicamento
-const deleteMedication = (medicationId) => {
+// Excluir medicamento
+const deleteMedication = (id) => {
     return new Promise((resolve, reject) => {
         const query = 'DELETE FROM Medications WHERE id = ?';
-        dt_1.default.query(query, [medicationId], (err, results) => {
+        dt_1.default.query(query, [id], (err, results) => {
             if (err)
                 return reject(err);
             resolve(results);

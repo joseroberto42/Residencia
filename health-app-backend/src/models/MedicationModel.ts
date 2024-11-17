@@ -13,19 +13,14 @@ export interface Medication {
     updatedAt?: Date; // Data da última atualização (opcional)
 }
 
+
+
 // Criar um novo medicamento
-export const createMedication = (medicationData: Medication) => {
+export const createMedication = (data: any) => {
+    const { userId, name, dosage, frequency, schedule, brand, days } = data;
     return new Promise((resolve, reject) => {
-        const query = 'INSERT INTO Medications (userId, name, dosage, frequency, schedule, brand, days, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())';
-        connection.query(query, [
-            medicationData.userId,
-            medicationData.name,
-            medicationData.dosage,
-            medicationData.frequency, // Frequência é diretamente o número
-            medicationData.schedule,
-            medicationData.brand,
-            medicationData.days // Adiciona a nova coluna days
-        ], (err: Error | null, results: any) => {
+        const query = 'INSERT INTO Medications (userId, name, dosage, frequency, schedule, brand, days) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        connection.query(query, [userId, name, dosage, frequency, schedule, brand, days], (err, results) => {
             if (err) return reject(err);
             resolve(results);
         });
@@ -36,40 +31,51 @@ export const createMedication = (medicationData: Medication) => {
 export const findMedicationsByUserId = (userId: number) => {
     return new Promise((resolve, reject) => {
         const query = 'SELECT * FROM Medications WHERE userId = ?';
-        connection.query(query, [userId], (err: Error | null, results: any) => { // Tipagem do 'err' e 'results'
+        connection.query(query, [userId], (err, results) => {
             if (err) return reject(err);
             resolve(results);
         });
     });
 };
 
-// Atualizar um medicamento existente
-export const updateMedication = (medicationId: number, medicationData: Medication) => {
+// Buscar medicamentos por ID de usuário e nome
+export const findMedicationsByUserIdAndName = (userId: number, name?: string) => {
     return new Promise((resolve, reject) => {
-        const query = 'UPDATE Medications SET name = ?, dosage = ?, frequency = ?, schedule = ?, brand = ?, days = ?, updatedAt = NOW() WHERE id = ?';
-        connection.query(query, [
-            medicationData.name,
-            medicationData.dosage,
-            medicationData.frequency, // Frequência é diretamente o número
-            medicationData.schedule,
-            medicationData.brand,
-            medicationData.days, // Atualiza a coluna days
-            medicationId
-        ], (err: Error | null, results: any) => {
+        let query = 'SELECT * FROM Medications WHERE userId = ?';
+        const params: any[] = [userId];
+
+        // Adicionar filtro por nome, se fornecido
+        if (name) {
+            query += ' AND name LIKE ?';
+            params.push(`%${name}%`);
+        }
+
+        connection.query(query, params, (err, results) => {
             if (err) return reject(err);
             resolve(results);
         });
     });
 };
 
-// Deletar um medicamento
-export const deleteMedication = (medicationId: number) => {
+// Atualizar medicamento
+export const updateMedication = (id: number, data: any) => {
+    const { userId, name, dosage, frequency, schedule, brand, days } = data;
+    return new Promise((resolve, reject) => {
+        const query = 'UPDATE Medications SET userId = ?, name = ?, dosage = ?, frequency = ?, schedule = ?, brand = ?, days = ? WHERE id = ?';
+        connection.query(query, [userId, name, dosage, frequency, schedule, brand, days, id], (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};
+
+// Excluir medicamento
+export const deleteMedication = (id: number) => {
     return new Promise((resolve, reject) => {
         const query = 'DELETE FROM Medications WHERE id = ?';
-        connection.query(query, [medicationId], (err: Error | null, results: any) => { // Tipagem do 'err' e 'results'
+        connection.query(query, [id], (err, results) => {
             if (err) return reject(err);
             resolve(results);
         });
     });
 };
-

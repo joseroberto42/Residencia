@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.findUserByEmail = exports.createUser = void 0;
+exports.findUserById = exports.deleteUser = exports.updateUser = exports.findUserByEmail = exports.createUser = void 0;
 const dt_1 = __importDefault(require("../config/dt"));
 const createUser = (userData) => {
     return new Promise((resolve, reject) => {
@@ -50,3 +50,14 @@ const deleteUser = (userId) => {
     });
 };
 exports.deleteUser = deleteUser;
+const findUserById = (id) => {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT * FROM Users WHERE id = ?';
+        dt_1.default.query(query, [id], (err, results) => {
+            if (err)
+                return reject(err);
+            resolve(results.length > 0 ? results[0] : null); // Retorna o primeiro usuário encontrado ou null
+        });
+    });
+};
+exports.findUserById = findUserById;

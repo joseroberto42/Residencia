@@ -56,3 +56,12 @@ export const deleteUser = (userId: number): Promise<ResultSetHeader> => {
         });
     });
 };
+export const findUserById = (id: number): Promise<User | null> => {
+    return new Promise<User | null>((resolve, reject) => {
+        const query = 'SELECT * FROM Users WHERE id = ?';
+        connection.query<RowDataPacket[]>(query, [id], (err, results) => {
+            if (err) return reject(err);
+            resolve(results.length > 0 ? results[0] as User : null); // Retorna o primeiro usuário encontrado ou null
+        });
+    });
+};
